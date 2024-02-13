@@ -11,11 +11,11 @@ const bcrypt = require('bcrypt')  // bcrypt 불러오기
 // use mongodb
 const { MongoClient, ObjectId } = require('mongodb')
 const MongoStore = require('connect-mongo')
-// use
+// use .env
 require('dotenv').config()
 
 let db;
-const url = "mongodb+srv://sdh4202:dhseo6367@atlascluster.qkezatx.mongodb.net/?retryWrites=true&w=majority";
+const url = process.env.mongoUrl;
 new MongoClient(url).connect().then((client)=>{
   console.log('DB연결성공')
   db = client.db('forum')
@@ -37,7 +37,7 @@ app.use(session({
   resave : false,
   saveUninitialized : false,
   store : MongoStore.create({
-    mongoUrl : "mongodb+srv://sdh4202:dhseo6367@atlascluster.qkezatx.mongodb.net/?retryWrites=true&w=majority",
+    mongoUrl : process.env.mongoUrl,
     dbName : 'forum'
   })
 }))
