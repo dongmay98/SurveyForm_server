@@ -1,29 +1,25 @@
-  const express = require('express');
+require('dotenv').config();
+const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const MongoStore = require('connect-mongo');
-require('dotenv').config();
-
 const app = express();
-app.use(express.static(__dirname + '/public'));
-app.set('view engine', 'ejs');
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 // Express 서버에서 CORS 설정
 const cors = require('cors');
 app.use(cors());
 
 
 // Mongoose MongoDB 연결
-mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log('DB연결성공'))
   .catch((err) => console.log(err));
 
 // User 스키마 및 모델 정의
 const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true, lowercase: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true }
 });
@@ -36,13 +32,14 @@ app.use(session({
   saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URL,
-    dbName: 'forum'
+    dbName: 'googleform'
   })
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
+// passport done()에 user정보 담아 반환
 passport.use(new LocalStrategy(async (username, password, done) => {
   try {
     const user = await User.findOne({ username: username });
@@ -60,6 +57,18 @@ passport.use(new LocalStrategy(async (username, password, done) => {
     return done(error);
   }
 }));
+
+// 사용자 인증 성공 시 사용자 ID를 세션에 저장
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+// 세션에 저장된 사용자 ID를 바탕으로 사용자 정보 조회
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
+    done(err, user);
+  });
+});
 
 app.post('/join', async (req, res) => {
   try {
