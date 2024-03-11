@@ -7,6 +7,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const MongoStore = require('connect-mongo');
 const app = express();
+app.use(express.json());
 // Express 서버에서 CORS 설정
 const cors = require('cors');
 app.use(cors());
@@ -65,26 +66,51 @@ passport.serializeUser((user, done) => {
 
 // 세션에 저장된 사용자 ID를 바탕으로 사용자 정보 조회
 passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
-    done(err, user);
-  });
+  User.findById(id)
+    .then(user => done(null, user))
+    .catch(error => done(error, null));
 });
 
 app.post('/join', async (req, res) => {
   try {
+    // req.body로부터 username, email, password 추출
+    const { username, email, password } = req.body;
+    // username이 이미 존재하는지 확인
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).send('Username already exists.');
+    }
+    // 비밀번호 해싱
     const hashpwd = await bcrypt.hash(req.body.password, 10);
 
     await new User({
-      username: req.body.username,
+      username, // db에 저장할 데이터 
+      email, 
       password: hashpwd
     }).save();
 
-    res.redirect('/login');
+    res.send('회원가입완료');
+    // res.redirect('/login');
   } catch (error) {
     console.error(error);
     res.status(500).send('Error creating the user');
   }
 });
+
+// 로그인 처리
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/', // 로그인 성공 시 리다이렉트할 경로
+  failureRedirect: '/login', // 로그인 실패 시 리다이렉트할 경로
+  failureFlash: true // 선택 사항: 실패 시 메시지를 flash로 보여줄지 여부
+}));
+
+// 로그인 페이지 렌더링
+app.get('/login', (req, res) => {
+  res.render("하이"); 
+});
+
+
+
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running at http://localhost:${process.env.PORT}`);
