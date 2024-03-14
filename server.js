@@ -6,11 +6,18 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const MongoStore = require('connect-mongo');
+const flash = require('connect-flash');
 const app = express();
-app.use(express.json());
-// Express 서버에서 CORS 설정
 const cors = require('cors');
-app.use(cors());
+app.use(express.json());
+
+// CORS 미들웨어 설정
+const corsOptions = {
+  origin: 'http://localhost:3000', // 클라이언트 서버 주소
+  credentials: true, // 쿠키를 허용
+  optionsSuccessStatus: 200 // 일부 레거시 브라우저의 경우
+};
+app.use(cors(corsOptions));
 
 
 // Mongoose MongoDB 연결
@@ -36,28 +43,34 @@ app.use(session({
     dbName: 'googleform'
   })
 }));
-
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
 // passport done()에 user정보 담아 반환
-passport.use(new LocalStrategy(async (username, password, done) => {
+passport.use(new LocalStrategy({
+  usernameField: 'email', // 사용자 인증 시 'email' 필드 사용
+}, async (email, password, done) => {
   try {
-    const user = await User.findOne({ username: username });
+    // 이메일을 사용하여 사용자를 찾음
+    const user = await User.findOne({ email: email.toLowerCase() }); // 대소문자 구분 없이 이메일 검색
     if (!user) {
       return done(null, false, { message: '아이디 DB에 없음' });
     }
 
+    // 비밀번호 비교
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return done(null, false, { message: '비번불일치' });
     }
 
+    // 성공적으로 사용자를 찾았을 경우
     return done(null, user);
   } catch (error) {
     return done(error);
   }
 }));
+
 
 // 사용자 인증 성공 시 사용자 ID를 세션에 저장
 passport.serializeUser((user, done) => {
@@ -98,15 +111,24 @@ app.post('/join', async (req, res) => {
 });
 
 // 로그인 처리
-app.post('/login', passport.authenticate('local', {
-  successRedirect: '/', // 로그인 성공 시 리다이렉트할 경로
-  failureRedirect: '/login', // 로그인 실패 시 리다이렉트할 경로
-  failureFlash: true // 선택 사항: 실패 시 메시지를 flash로 보여줄지 여부
-}));
-
-// 로그인 페이지 렌더링
-app.get('/login', (req, res) => {
-  res.render("하이"); 
+app.post('/login', function(req, res, next) {
+  passport.authenticate('local', function(err, user, info) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      // 사용자 인증 실패
+      console.log(info);
+      return res.status(401).json({ message: '로그인 실패' });
+    }
+    req.logIn(user, function(err) {
+      if (err) {
+        return next(err);
+      }
+      // 사용자 인증 성공
+      return res.json({ message: '로그인 성공' });
+    });
+  })(req, res, next);
 });
 
 
