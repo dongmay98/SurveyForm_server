@@ -16,6 +16,10 @@ module.exports = (app) => {
         mongoUrl: process.env.MONGO_URL,
         dbName: "googleform",
       }),
+      cookie: {
+        secure: true, // HTTPS 환경에서는 true로 설정
+        sameSite: "none", // Cross-Site 쿠키 설정
+      },
     })
   );
 
