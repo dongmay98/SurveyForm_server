@@ -3,6 +3,18 @@ const router = express.Router();
 const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const mailer = require("../utils/mailer");
+const cors = require("cors");
+
+const corsOptions = {
+  origin: [
+    "https://dongmay98.github.io",
+    "https://dongmay98.github.io/GoogleForm_client-TS",
+  ],
+  methods: ["GET", "POST"],
+  credentials: true,
+};
+
+router.use(cors(corsOptions));
 
 router.post("/submit-survey", (req, res) => {
   const { surveyData } = req.body;

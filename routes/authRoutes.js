@@ -3,6 +3,18 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const passport = require("passport");
+const cors = require("cors");
+
+const corsOptions = {
+  origin: [
+    "https://dongmay98.github.io",
+    "https://dongmay98.github.io/GoogleForm_client-TS",
+  ],
+  methods: ["GET", "POST"],
+  credentials: true,
+};
+
+router.use(cors(corsOptions));
 
 router.post("/join", async (req, res) => {
   try {
