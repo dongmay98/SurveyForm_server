@@ -17,6 +17,7 @@ const corsOptions = {
   origin: [
     "https://dongmay98.github.io/",
     "https://port-0-googleform-server-85phb42bluv1sf6v.sel5.cloudtype.app",
+    "https://dongmay98.github.io/GoogleForm_client-TS",
   ],
   credentials: true,
   optionsSuccessStatus: 200,
