@@ -17,8 +17,8 @@ module.exports = (app) => {
         dbName: "googleform",
       }),
       cookie: {
-        secure: true, // HTTPS 환경에서는 true로 설정
-        sameSite: "none", // Cross-Site 쿠키 설정
+        secure: process.env.NODE_ENV === "production", // 개발 환경에서는 false로 설정
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // 개발 환경에서는 "lax"로 설정
       },
     })
   );
