@@ -14,7 +14,10 @@ app.use(express.json());
 
 // CORS 설정
 const corsOptions = {
-  origin: ["http://localhost:3000"],
+  origin: [
+    "http://localhost:3000",
+    "https://port-0-googleform-server-85phb42bluv1sf6v.sel5.cloudtype.app",
+  ],
   credentials: true,
   optionsSuccessStatus: 200,
 };
