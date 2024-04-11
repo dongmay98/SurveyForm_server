@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Survey Result</title>
+  </head>
+  <body>
+    <h1><%= surveyData.surveyTitle %></h1>
+    <p><%= surveyData.surveyDescription %></p>
+
+    <% surveyData.questions.forEach((question) => { %>
+    <h3><%= question.questionTitle %></h3>
+
+    <% if (question.questionType === '단답형') { %>
+    <p>답변: <%= question.text || '답변이 없습니다.' %></p>
+    <% } else if (question.questionType === '객관식' || question.questionType
+    === '체크박스') { %> <% if (question.selectedOptions &&
+    question.selectedOptions.length > 0) { %>
+    <p>선택된 옵션:</p>
+    <ul>
+      <% question.selectedOptions.forEach((option) => { %>
+      <li><%= option.value %></li>
+      <% }) %>
+    </ul>
+    <% } else { %>
+    <p>선택된 옵션이 없습니다.</p>
+    <% } %> <% } %> <% }) %>
+  </body>
+</html>
