@@ -14,11 +14,7 @@ app.use(express.json());
 
 // CORS 설정
 const corsOptions = {
-  origin: [
-    "https://dongmay98.github.io/",
-    "https://port-0-googleform-server-85phb42bluv1sf6v.sel5.cloudtype.app",
-    "https://dongmay98.github.io/GoogleForm_client-TS",
-  ],
+  origin: "https://dongmay98.github.io/GoogleForm_client-TS",
   methods: ["GET", "POST"],
   credentials: true,
   optionsSuccessStatus: 200,
