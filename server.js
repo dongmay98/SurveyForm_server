@@ -25,6 +25,12 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+// 응답 헤더에 Access-Control-Allow-Credentials 설정
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", true);
+  next();
+});
+
 app.get("/", (req, res) => {
   res.send("hello");
 });
