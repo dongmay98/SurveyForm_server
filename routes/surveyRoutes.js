@@ -18,8 +18,8 @@ router.use(cors(corsOptions));
 
 router.post("/submit-survey", (req, res) => {
   const { surveyData } = req.body;
-  console.log(surveyData);
-  if (!req.isAuthenticated()) {
+
+  if (!req.user()) {
     return res.status(401).json({ error: "Unauthorized" });
   }
   const userEmail = req.user.email;
