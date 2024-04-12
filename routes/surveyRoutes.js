@@ -18,14 +18,9 @@ const corsOptions = {
 router.use(cors(corsOptions));
 
 router.post("/submit-survey", (req, res) => {
-  const { surveyData } = req.body;
+  const { surveyData, userEmail } = req.body;
 
-  if (!req.user) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
-  const userEmail = req.user.email;
-
+  // 이메일 전송 로직
   ejs.renderFile("views/surveyEmail.ejs", { surveyData }, (err, html) => {
     if (err) {
       console.log("Error rendering email template:", err);
