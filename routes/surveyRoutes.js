@@ -17,7 +17,7 @@ const corsOptions = {
 
 router.use(cors(corsOptions));
 
-router.post("/submit-survey", passport.authenticate("local"), (req, res) => {
+router.post("/submit-survey", passport.authenticate("session"), (req, res) => {
   const { surveyData } = req.body;
 
   if (!req.user()) {
