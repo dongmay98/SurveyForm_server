@@ -34,6 +34,8 @@ require("./config/database");
 
 // 세션 및 Passport 설정
 require("./config/passport")(app);
+app.use(passport.initialize());
+app.use(passport.session());
 
 // 라우터 연결
 const authRoutes = require("./routes/authRoutes");

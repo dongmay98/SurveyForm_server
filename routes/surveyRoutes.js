@@ -3,6 +3,7 @@ const router = express.Router();
 const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const mailer = require("../utils/mailer");
+const passport = require("passport");
 const cors = require("cors");
 
 const corsOptions = {
@@ -16,7 +17,7 @@ const corsOptions = {
 
 router.use(cors(corsOptions));
 
-router.post("/submit-survey", (req, res) => {
+router.post("/submit-survey", passport.authenticate("local"), (req, res) => {
   const { surveyData } = req.body;
 
   if (!req.user()) {
