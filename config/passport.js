@@ -17,8 +17,10 @@ module.exports = (app) => {
         dbName: "googleform",
       }),
       cookie: {
-        secure: process.env.NODE_ENV === "production", // 개발 환경에서는 false로 설정
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // 개발 환경에서는 "lax"로 설정
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000, // 24시간
       },
     })
   );
