@@ -5,18 +5,23 @@
     <title>Survey Result</title>
   </head>
   <body>
-    <div style="border: 1px solid black">
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      "
+    >
       <h1 style="border-bottom: 1px solid orange">
         <%= surveyData.surveyTitle %>
       </h1>
-      <p><%= surveyData.surveyDescription %></p>
+      <p style="font-size: 18px"><%= surveyData.surveyDescription %></p>
     </div>
 
     <div style="border: 1px solid black">
       <% surveyData.questions.forEach((question) => { %>
-      <h3 style="border-bottom: 1px solid orange">
-        <%= question.questionTitle %>
-      </h3>
+      <h3><%= question.questionTitle %></h3>
 
       <% if (question.questionType === '단답형') { %>
       <p>답변: <%= question.text || '답변이 없습니다.' %></p>
