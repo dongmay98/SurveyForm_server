@@ -1,2 +1,2 @@
-# <서동현> GoogleForm Project Server_Code
-## Stack : node.js express mongoDB + react
+# <서동현> Survey Form Project Server
+## Stack : node.js express Mongoose+MongoDB NodeMailer+SMTP
