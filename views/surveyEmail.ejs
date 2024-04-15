@@ -5,25 +5,33 @@
     <title>Survey Result</title>
   </head>
   <body>
-    <h1><%= surveyData.surveyTitle %></h1>
-    <p><%= surveyData.surveyDescription %></p>
+    <div style="border: 1px solid black">
+      <h1 style="border-bottom: 1px solid orange">
+        <%= surveyData.surveyTitle %>
+      </h1>
+      <p><%= surveyData.surveyDescription %></p>
+    </div>
 
-    <% surveyData.questions.forEach((question) => { %>
-    <h3><%= question.questionTitle %></h3>
+    <div style="border: 1px solid black">
+      <% surveyData.questions.forEach((question) => { %>
+      <h3 style="border-bottom: 1px solid orange">
+        <%= question.questionTitle %>
+      </h3>
 
-    <% if (question.questionType === '단답형') { %>
-    <p>답변: <%= question.text || '답변이 없습니다.' %></p>
-    <% } else if (question.questionType === '객관식' || question.questionType
-    === '체크박스') { %> <% if (question.selectedOptions &&
-    question.selectedOptions.length > 0) { %>
-    <p>선택된 옵션:</p>
-    <ul>
-      <% question.selectedOptions.forEach((option) => { %>
-      <li><%= option.value %></li>
-      <% }) %>
-    </ul>
-    <% } else { %>
-    <p>선택된 옵션이 없습니다.</p>
-    <% } %> <% } %> <% }) %>
+      <% if (question.questionType === '단답형') { %>
+      <p>답변: <%= question.text || '답변이 없습니다.' %></p>
+      <% } else if (question.questionType === '객관식' || question.questionType
+      === '체크박스') { %> <% if (question.selectedOptions &&
+      question.selectedOptions.length > 0) { %>
+      <p>선택된 옵션:</p>
+      <ul>
+        <% question.selectedOptions.forEach((option) => { %>
+        <li><%= option.value %></li>
+        <% }) %>
+      </ul>
+      <% } else { %>
+      <p>선택된 옵션이 없습니다.</p>
+      <% } %> <% } %> <% }) %>
+    </div>
   </body>
 </html>
